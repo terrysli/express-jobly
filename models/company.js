@@ -66,6 +66,28 @@ class Company {
     return companiesRes.rows;
   }
 
+  /** Find all companies that meet filter requirements
+   *
+   * Take object with filter criteria and return all matching companies
+   * {minEmployees, maxEmployees, nameLike} =>
+   * [{handle, name, description, numEmployees, logoUrl}, ...]
+   *
+   */
+
+  static async findSome(filters) {
+    const filtersSQL = sqlForFiltering(filters);
+    const companiesRes = await db.query(
+      `SELECT handle,
+              name,
+              description,
+              num_employees AS "numEmployees",
+              logo_url AS "logoUrl"
+        FROM companies
+        WHERE ${filtersSQL}`);
+    return companiesRes.rows;
+  }
+
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
