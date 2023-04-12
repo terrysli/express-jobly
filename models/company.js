@@ -4,6 +4,11 @@ const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
+const JS_TO_SQL = {
+  numEmployees: "num_employees",
+  logoUrl: "logo_url"
+}
+
 /** Related functions for companies. */
 
 class Company {
@@ -66,16 +71,47 @@ class Company {
     return companiesRes.rows;
   }
 
-  /** Find all companies that meet filter requirements
-   *
-   * Take object with filter criteria and return all matching companies
-   * {minEmployees, maxEmployees, nameLike} =>
-   * [{handle, name, description, numEmployees, logoUrl}, ...]
-   *
+  /** Find all companies that meet filter criteria:
+   *  nameLike: filter by company name, selecting companies that include
+   *    this string, case insensitive.
+   *  minEmployees: companies with at leas this many employees.
+   *  maxEmployees: companies with no more than this many employees.
+   * 
+   * All criteria are optional. If some are provided, only
+   * filters by those criteria
+   *  
+   * Data can include: {nameLike, minEmployees, maxEmployees}
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
 
   static async findSome(filters) {
-    const filtersSQL = sqlForFiltering(filters);
+    const filterVals = []
+    let whereClause = "WHERE ";
+    let filterCount = 1;
+
+    if ("minEmployees" in filters) {
+      filterVals.push(filters.minEmployees)
+      whereClause += `num_employees >= $${filterCount} `;
+      filterCount += 1;
+    }
+    if ("maxEmployees" in filters) {
+      filterVals.push(filters.maxEmployees)
+      if (filterCount > 1) {
+        whereClause += `AND `
+      }
+      whereClause += `num_employees <= $${filterCount} `;
+      filterCount += 1;
+    }
+    if ("nameLike" in filters) {
+      filterVals.push(`%${filters.nameLike}%`)
+      if (filterCount > 1) {
+        whereClause += `AND `
+      }
+      whereClause += `name ILIKE $${filterCount}`; 
+      filterCount += 1;
+    }
+    console.log(whereClause);
+    console.log(filterVals);
     const companiesRes = await db.query(
       `SELECT handle,
               name,
@@ -83,7 +119,8 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
         FROM companies
-        WHERE ${filtersSQL}`);
+        ${(filterCount > 1) ? whereClause : ""}
+        ORDER BY NAME`,filterVals);
     return companiesRes.rows;
   }
 
@@ -129,10 +166,7 @@ class Company {
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
         data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+        JS_TO_SQL);
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `

@@ -6,7 +6,7 @@ const { BadRequestError } = require("../expressError");
  * {firstName: 'Aliya', age: 32},
  * {firstName: 'first_name', lastName: 'last_name', isAdmin: 'is_admin'} =>
  *  {
-    *  selCols: '"first_name"=$1, "age"=$2',
+    *  setCols: '"first_name"=$1, "age"=$2',
     *  values: ['Aliya', 32]
     }
  */
@@ -32,15 +32,13 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  * WHERE operator for db query
  * {minEmployees: 1, maxEmployees: 10, nameLike: "Sons"} =>
  * {
- *    setCols: '"numEmployees" >= $1, "numEmployees" <= $2, ILIKE($3)',
+ *    setCols: '"WHERE numEmployees" >= $1, "numEmployees" <= $2, ILIKE($3)',
  *    values: [1, 10, '%Sons%']
  * }
  */
-
-function sqlForFiltering(filters, jsToSql) {
+function sqlForFiltering(dataToFilterBy, jsToSql) {
   const keys = Object.keys(filters);
 
-  const cols =
 }
 
 module.exports = { sqlForPartialUpdate };
