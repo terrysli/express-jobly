@@ -30,22 +30,22 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 /**
  * Take object with filters and generate SQL statements to be inserted into
  * WHERE operator for db query
- * dataToFilterBy: [{filter: "num_employees", method: ">=", val: 1},
- *    {filter: "num_employees", method: "<=", val: 10},
- *    {filter: "name", method: "ILIKE", val: 'Sons'}] =>
+ * dataToFilterBy: [{filter: "num_employees", method: ">=", value: 1},
+ *    {filter: "num_employees", method: "<=", value: 10},
+ *    {filter: "name", method: "ILIKE", value: 'Sons'}] =>
  * {
  *    conditions: 'num_employees >= $1 AND num_employees <= $2 AND name ILIKE $3',
  *    values: [1, 10, '%Sons%']
  * }
  */
-function sqlForFiltering(dataToFilterBy, jsToSql) {
+function sqlForFiltering(dataToFilterBy) {
   let conditions = "";
   const values = [];
   let counter = 1;
 
   for (let datum of dataToFilterBy) {
     if (counter > 1) {
-      conditions += `AND `;
+      conditions += ` AND `;
     }
     conditions += `${datum.filter} ${datum.method} $${counter}`
     if (datum.method==="ILIKE") {
@@ -56,7 +56,7 @@ function sqlForFiltering(dataToFilterBy, jsToSql) {
     }
     counter++;
   }
-
+  return { conditions, values };
 }
 
-module.exports = { sqlForPartialUpdate };
+module.exports = { sqlForPartialUpdate, sqlForFiltering };
