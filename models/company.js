@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
 
 const JS_TO_SQL = {
   numEmployees: "num_employees",
@@ -76,42 +76,59 @@ class Company {
    *    this string, case insensitive.
    *  minEmployees: companies with at leas this many employees.
    *  maxEmployees: companies with no more than this many employees.
-   * 
+   *
    * All criteria are optional. If some are provided, only
    * filters by those criteria
-   *  
+   *
    * Data can include: {nameLike, minEmployees, maxEmployees}
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
 
   static async findSome(filters) {
-    const filterVals = []
-    let whereClause = "WHERE ";
-    let filterCount = 1;
+    // const filterVals = []
+    // let whereClause = "WHERE ";
+    // let filterCount = 1;
 
+    // if ("minEmployees" in filters) {
+    //   filterVals.push(filters.minEmployees)
+    //   whereClause += `num_employees >= $${filterCount} `;
+    //   filterCount += 1;
+    // }
+    // if ("maxEmployees" in filters) {
+    //   filterVals.push(filters.maxEmployees)
+    //   if (filterCount > 1) {
+    //     whereClause += `AND `
+    //   }
+    //   whereClause += `num_employees <= $${filterCount} `;
+    //   filterCount += 1;
+    // }
+    // if ("nameLike" in filters) {
+    //   filterVals.push(`%${filters.nameLike}%`)
+    //   if (filterCount > 1) {
+    //     whereClause += `AND `
+    //   }
+    //   whereClause += `name ILIKE $${filterCount}`;
+    //   filterCount += 1;
+    // }
+    // console.log(whereClause);
+    // console.log(filterVals);
+
+    const dataToFilterBy = [];
     if ("minEmployees" in filters) {
-      filterVals.push(filters.minEmployees)
-      whereClause += `num_employees >= $${filterCount} `;
-      filterCount += 1;
-    }
-    if ("maxEmployees" in filters) {
-      filterVals.push(filters.maxEmployees)
-      if (filterCount > 1) {
-        whereClause += `AND `
+      dataToFilterBy.push(
+        {filter: "num_employees", method: ">=", value: filters.minEmployees});
       }
-      whereClause += `num_employees <= $${filterCount} `;
-      filterCount += 1;
+    if ("maxEmployees" in filters) {
+      dataToFilterBy.push(
+        {filter: "num_employees", method: "<=", value: filters.maxEmployees});
     }
     if ("nameLike" in filters) {
-      filterVals.push(`%${filters.nameLike}%`)
-      if (filterCount > 1) {
-        whereClause += `AND `
-      }
-      whereClause += `name ILIKE $${filterCount}`; 
-      filterCount += 1;
+      dataToFilterBy.push(
+        {filter: "name", method: "ILIKE", value: filters.nameLike});
     }
-    console.log(whereClause);
-    console.log(filterVals);
+
+    const { conditions, values } = sqlForFiltering(dataToFilterBy);
+
     const companiesRes = await db.query(
       `SELECT handle,
               name,
@@ -119,8 +136,8 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
         FROM companies
-        ${(filterCount > 1) ? whereClause : ""}
-        ORDER BY NAME`,filterVals);
+        WHERE ${conditions}
+        ORDER BY NAME`, values);
     return companiesRes.rows;
   }
 
