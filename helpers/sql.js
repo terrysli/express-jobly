@@ -1,12 +1,12 @@
 const { BadRequestError } = require("../expressError");
 
 /**
- * Take object with data to update and generate parameterized SQL
- * statements to set columns equal to given data values
+ * Take object with data to update and JS to SQL conversion object and generate
+ * parameterized SQL statements to set columns equal to given data values
  * {firstName: 'Aliya', age: 32},
- * {firstName: 'first_name', lastName:} =>
+ * {firstName: 'first_name', lastName: 'last_name', isAdmin: 'is_admin'} =>
  *  {
-    *  selCols: "first_name=$1, age=$2",
+    *  selCols: '"first_name"=$1, "age"=$2',
     *  values: ['Aliya', 32]
     }
  */

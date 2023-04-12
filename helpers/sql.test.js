@@ -1,3 +1,4 @@
+const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { sqlForPartialUpdate } = require("./sql");
 
@@ -15,29 +16,16 @@ describe("generate sql", function () {
     }
     const sql = sqlForPartialUpdate(dataToUpdate, USER_JS_TO_SQL);
     expect(sql).toEqual({
-      setCols: '"first_name=$1, age=$2"',
+      setCols: '"first_name"=$1, "age"=$2',
       values: ['Aliya', 32]
     });
   });
 
-  // test("something", function () {
-  //   const token = createToken({ username: "test", isAdmin: true });
-  //   const payload = jwt.verify(token, SECRET_KEY);
-  //   expect(payload).toEqual({
-  //     iat: expect.any(Number),
-  //     username: "test",
-  //     isAdmin: true,
-  //   });
-  // });
-
-  // test("fails: no body", function () {
-  //   // given the security risk if this didn't work, checking this specifically
-  //   const token = createToken({ username: "test" });
-  //   const payload = jwt.verify(token, SECRET_KEY);
-  //   expect(payload).toEqual({
-  //     iat: expect.any(Number),
-  //     username: "test",
-  //     isAdmin: false,
-  //   });
-  // });
+  test("fails: no data", function () {
+    try {
+      const sql = sqlForPartialUpdate({}, USER_JS_TO_SQL);
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
 });
