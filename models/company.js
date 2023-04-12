@@ -85,33 +85,6 @@ class Company {
    */
 
   static async findSome(filters) {
-    // const filterVals = []
-    // let whereClause = "WHERE ";
-    // let filterCount = 1;
-
-    // if ("minEmployees" in filters) {
-    //   filterVals.push(filters.minEmployees)
-    //   whereClause += `num_employees >= $${filterCount} `;
-    //   filterCount += 1;
-    // }
-    // if ("maxEmployees" in filters) {
-    //   filterVals.push(filters.maxEmployees)
-    //   if (filterCount > 1) {
-    //     whereClause += `AND `
-    //   }
-    //   whereClause += `num_employees <= $${filterCount} `;
-    //   filterCount += 1;
-    // }
-    // if ("nameLike" in filters) {
-    //   filterVals.push(`%${filters.nameLike}%`)
-    //   if (filterCount > 1) {
-    //     whereClause += `AND `
-    //   }
-    //   whereClause += `name ILIKE $${filterCount}`;
-    //   filterCount += 1;
-    // }
-    // console.log(whereClause);
-    // console.log(filterVals);
 
     const dataToFilterBy = [];
     if ("minEmployees" in filters) {
