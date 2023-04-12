@@ -26,4 +26,21 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
+
+/**
+ * Take object with filters and generate SQL statements to be inserted into
+ * WHERE operator for db query
+ * {minEmployees: 1, maxEmployees: 10, nameLike: "Sons"} =>
+ * {
+ *    setCols: '"numEmployees" >= $1, "numEmployees" <= $2, ILIKE($3)',
+ *    values: [1, 10, '%Sons%']
+ * }
+ */
+
+function sqlForFiltering(filters, jsToSql) {
+  const keys = Object.keys(filters);
+
+  const cols =
+}
+
 module.exports = { sqlForPartialUpdate };
