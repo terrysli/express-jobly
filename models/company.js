@@ -83,7 +83,7 @@ class Company {
    * Data can include: {nameLike, minEmployees, maxEmployees}
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
-  //TODO: either acutally require no criteria, or specify it takes at least one
+
   static async findSome(filters) {
 
     if ("minEmployees" in filters
@@ -106,7 +106,8 @@ class Company {
         {filter: "name", method: "ILIKE", value: filters.nameLike});
     }
 
-    const { conditions, values } = sqlForFiltering(dataToFilterBy);
+    let { conditions, values } = sqlForFiltering(dataToFilterBy);
+    conditions = (conditions ? `WHERE ${conditions}` : "");
 
     const companiesRes = await db.query(
       `SELECT handle,
@@ -115,7 +116,7 @@ class Company {
               num_employees AS "numEmployees",
               logo_url AS "logoUrl"
         FROM companies
-        WHERE ${conditions}
+        ${conditions}
         ORDER BY NAME`, values);
     return companiesRes.rows;
   }
