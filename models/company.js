@@ -86,6 +86,12 @@ class Company {
   //TODO: either acutally require no criteria, or specify it takes at least one
   static async findSome(filters) {
 
+    if ("minEmployees" in filters
+      && "maxEmployees" in filters
+      && filters.maxEmployees < filters.minEmployees) {
+        throw new BadRequestError("minEmployees cannot be greater than maxEmployees.");
+      }
+
     const dataToFilterBy = [];
     if ("minEmployees" in filters) {
       dataToFilterBy.push(

@@ -125,16 +125,6 @@ describe("GET /companies", function () {
     });
   });
 
-  test("bad request: minEmployees > maxEmployees", async function () {
-    const resp = await request(app).get("/companies").query(
-      {
-        minEmployees: 1000,
-        maxEmployees: 1,
-      });
-
-    expect(resp.statusCode).toEqual(400);
-  });
-
   test("bad request: unexpected fields", async function () {
     const resp = await request(app).get("/companies").query(
       {

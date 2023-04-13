@@ -105,7 +105,7 @@ describe("findSome", function () {
   });
 
   test("works: filter by name", async function () {
-    let companies = await Company.findSome({nameLike: "1"});
+    let companies = await Company.findSome({ nameLike: "1" });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -119,7 +119,7 @@ describe("findSome", function () {
 
   test("works: filter by all 3", async function () {
     let companies = await Company.findSome(
-      {minEmployees: 2, maxEmployees: 2, nameLike: "2"});
+      { minEmployees: 2, maxEmployees: 2, nameLike: "2" });
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -129,6 +129,16 @@ describe("findSome", function () {
         logoUrl: "http://c2.img",
       }
     ]);
+  });
+
+  test("bad request if maxEmployees < minEmployees", async function () {
+    try {
+      await Company.findSome(
+        { minEmployees: 2, maxEmployees: 1 });
+    }
+    catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
   });
 });
 
