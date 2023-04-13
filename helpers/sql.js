@@ -42,18 +42,17 @@ function sqlForFiltering(dataToFilterBy) {
   let conditions = "";
   const values = [];
   let counter = 1;
-  //TODO: destructure datum
-  //TODO: semicolons
-  for (let datum of dataToFilterBy) {
+
+  for (let {filter, method, value} of dataToFilterBy) {
     if (counter > 1) {
       conditions += ` AND `;
     }
-    conditions += `${datum.filter} ${datum.method} $${counter}`;
-    if (datum.method==="ILIKE") {
-      values.push(`%${datum.value}%`);
+    conditions += `${filter} ${method} $${counter}`;
+    if (method==="ILIKE") {
+      values.push(`%${value}%`);
     }
     else {
-      values.push(datum.value);
+      values.push(value);
     }
     counter++;
   }
