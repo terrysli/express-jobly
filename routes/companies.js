@@ -58,10 +58,6 @@ router.post(
  */
 
 router.get("/", async function (req, res, next) {
-  // if (Object.keys(req.query).length === 0) {
-  //   const companies = await Company.findAll();
-  //   return res.json({ companies });
-  // }
 
   //Query string can only give us back strings. We make these numbers so
   // we can validate properly with our schema.
