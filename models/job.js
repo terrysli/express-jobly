@@ -3,22 +3,24 @@
 const db = require("../db");
 const Company = require("./company");
 const { BadRequestError, NotFoundError } = require("../expressError");
+const { sqlForFiltering } = require("../helpers/sql");
 
 class Job {
   /** Create a jobs (from data), update db, return new job data.
    *
-   * data should be { title, salary, equity, company_handle }
+   * data should be { title, salary, equity, companyHandle }
    *
-   * Returns { id, title, salary, equity, company_handle }
+   * Returns { id, title, salary, equity, companyHandle }
    * */
 
-  static async create({ title, salary, equity, company_handle }) {
+  static async create({ title, salary, equity, companyHandle }) {
 
-    console.log("@@@ Create Ran, input: ", { title, salary, equity, company_handle });
     try {
-      await Company.get(company_handle);
+      await Company.get(companyHandle);
     }
-    catch (err) {throw new NotFoundError(`No company: ${handle}`);}
+    catch (err) {
+      throw new NotFoundError(`No company: ${companyHandle}`);
+    }
 
     if (salary < 0) {throw new BadRequestError("Salary must be non-negative")};
     if (equity < 0 || equity > 1) {
@@ -42,12 +44,11 @@ class Job {
         title,
         salary,
         equity,
-        company_handle,
+        companyHandle,
       ],
     );
 
     const job = result.rows[0];
-    console.log("@@@ Job:", job);
 
     return job;
   }
@@ -69,39 +70,35 @@ class Job {
 
   static async find(filters) {
 
-    // if ("minEmployees" in filters
-    //   && "maxEmployees" in filters
-    //   && filters.maxEmployees < filters.minEmployees) {
-    //   throw new BadRequestError("minEmployees cannot be greater than maxEmployees.");
-    // }
+    const dataToFilterBy = [];
+    if ("title" in filters) {
+      dataToFilterBy.push(
+        { filter: "title", method: "ILIKE", value: filters.title });
+    }
+    if ("minSalary" in filters) {
+      dataToFilterBy.push(
+        { filter: "salary", method: ">=", value: filters.minSalary });
+    }
+    if ("hasEquity" in filters) {
+      if (filters.hasEquity) {
+        dataToFilterBy.push(
+          { filter: "equity", method: ">", value: 0 });
+      }
+    }
 
-    // const dataToFilterBy = [];
-    // if ("minEmployees" in filters) {
-    //   dataToFilterBy.push(
-    //     { filter: "num_employees", method: ">=", value: filters.minEmployees });
-    // }
-    // if ("maxEmployees" in filters) {
-    //   dataToFilterBy.push(
-    //     { filter: "num_employees", method: "<=", value: filters.maxEmployees });
-    // }
-    // if ("nameLike" in filters) {
-    //   dataToFilterBy.push(
-    //     { filter: "name", method: "ILIKE", value: filters.nameLike });
-    // }
+    let { conditions, values } = sqlForFiltering(dataToFilterBy);
+    conditions = (conditions ? `WHERE ${conditions}` : "");
 
-    // let { conditions, values } = sqlForFiltering(dataToFilterBy);
-    // conditions = (conditions ? `WHERE ${conditions}` : "");
-
-    // const companiesRes = await db.query(
-    //   `SELECT handle,
-    //           name,
-    //           description,
-    //           num_employees AS "numEmployees",
-    //           logo_url AS "logoUrl"
-    //     FROM companies
-    //     ${conditions}
-    //     ORDER BY NAME`, values);
-    // return companiesRes.rows;
+    const jobsRes = await db.query(
+      `SELECT id,
+              title,
+              salary,
+              equity,
+              company_handle AS "companyHandle"
+        FROM jobs
+        ${conditions}
+        ORDER BY id`, values);
+    return jobsRes.rows;
   }
 
 
@@ -180,4 +177,4 @@ class Job {
 }
 
 
-module.exports = Company;
+module.exports = Job;
