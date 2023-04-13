@@ -58,15 +58,15 @@ router.post(
  */
 
 router.get("/", async function (req, res, next) {
-  if (Object.keys(req.query).length === 0) {
-    const companies = await Company.findAll();
-    return res.json({ companies });
-  }
+  // if (Object.keys(req.query).length === 0) {
+  //   const companies = await Company.findAll();
+  //   return res.json({ companies });
+  // }
 
   //Query string can only give us back strings. We make these numbers so
   // we can validate properly with our schema.
-  const q = Object.assign({}, req.query);//TODO: can use spread instead
-  //TODO: move error handling to model level
+  const q = {...req.query};
+
   if ("minEmployees" in q) {
     q.minEmployees = Number(q.minEmployees);
   }
@@ -84,12 +84,12 @@ router.get("/", async function (req, res, next) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
-  if (q.minEmployees > q.maxEmployees) {
-    throw new BadRequestError(
-      "minEmployees cannot be greater than maxEmployees.");
-  }
+  // if (q.minEmployees > q.maxEmployees) {
+  //   throw new BadRequestError(
+  //     "minEmployees cannot be greater than maxEmployees.");
+  // }
 
-  const companies = await Company.findSome(q);
+  const companies = await Company.find(q);
   return res.json({ companies });
 
 });

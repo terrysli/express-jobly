@@ -56,43 +56,12 @@ describe("create", function () {
   });
 });
 
-/************************************** findAll */
+/************************************** find with filters */
 
-describe("findAll", function () {
-  test("works: no filter", async function () {
-    let companies = await Company.findAll();
-    expect(companies).toEqual([
-      {
-        handle: "c1",
-        name: "C1",
-        description: "Desc1",
-        numEmployees: 1,
-        logoUrl: "http://c1.img",
-      },
-      {
-        handle: "c2",
-        name: "C2",
-        description: "Desc2",
-        numEmployees: 2,
-        logoUrl: "http://c2.img",
-      },
-      {
-        handle: "c3",
-        name: "C3",
-        description: "Desc3",
-        numEmployees: 3,
-        logoUrl: "http://c3.img",
-      },
-    ]);
-  });
-});
-
-/************************************** findSome */
-
-describe("findSome", function () {
+describe("find some", function () {
 
   test("works: filter by min/max employees", async function () {
-    let companies = await Company.findSome({ minEmployees: 2, maxEmployees: 2 });
+    let companies = await Company.find({ minEmployees: 2, maxEmployees: 2 });
     expect(companies).toEqual([
       {
         handle: "c2",
@@ -105,7 +74,7 @@ describe("findSome", function () {
   });
 
   test("works: filter by name", async function () {
-    let companies = await Company.findSome({ nameLike: "1" });
+    let companies = await Company.find({ nameLike: "1" });
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -118,7 +87,7 @@ describe("findSome", function () {
   });
 
   test("works: filter by all 3", async function () {
-    let companies = await Company.findSome(
+    let companies = await Company.find(
       { minEmployees: 2, maxEmployees: 2, nameLike: "2" });
     expect(companies).toEqual([
       {
@@ -133,7 +102,7 @@ describe("findSome", function () {
 
   test("bad request if maxEmployees < minEmployees", async function () {
     try {
-      await Company.findSome(
+      await Company.find(
         { minEmployees: 2, maxEmployees: 1 });
     }
     catch (err) {
@@ -142,7 +111,7 @@ describe("findSome", function () {
   });
 
   test("works if no filters", async function () {
-    let companies = await Company.findSome({});
+    let companies = await Company.find({});
     expect(companies).toEqual([
       {
         handle: "c1",

@@ -84,7 +84,7 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
 
-  static async findSome(filters) {
+  static async find(filters) {
 
     if ("minEmployees" in filters
       && "maxEmployees" in filters
