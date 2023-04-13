@@ -135,7 +135,7 @@ router.patch(
 
 /** DELETE /[handle]  =>  { deleted: handle }
  *
- * Authorization: login
+ * Authorization: login and admin
  */
 
 router.delete(
