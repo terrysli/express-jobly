@@ -69,6 +69,12 @@ describe("ensureAdmin", function () {
     ensureAdmin(req, res, next);
   });
 
+  test("unauth if not logged in", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureAdmin(req, res, next)).toThrowError();
+  });
+
   test("unauth if not admin", function () {
     const req = {};
     const res = { locals: { user: { username: "test", isAdmin: false } } };
@@ -78,25 +84,31 @@ describe("ensureAdmin", function () {
 
 describe("ensureCorrectUserOrAdmin", function () {
   test("works if admin", function () {
-    const req = { params: {username: "wrong"}};
+    const req = { params: { username: "wrong" } };
     const res = { locals: { user: { username: "test", isAdmin: true } } };
     ensureCorrectUserOrAdmin(req, res, next);
   });
 
   test("works if correct user", function () {
-    const req = { params: {username: "test"}};
+    const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
     ensureCorrectUserOrAdmin(req, res, next);
   });
 
   test("works if correct user and admin", function () {
-    const req = { params: {username: "test"}};
+    const req = { params: { username: "test" } };
     const res = { locals: { user: { username: "test", isAdmin: true } } };
     ensureCorrectUserOrAdmin(req, res, next);
   });
 
+  test("unauth if not logged in", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureCorrectUserOrAdmin(req, res, next)).toThrowError();
+  });
+
   test("unauth if not admin or correct user", function () {
-    const req = { params: {username: "wrong"}};
+    const req = { params: { username: "wrong" } };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
     expect(() => ensureCorrectUserOrAdmin(req, res, next)).toThrowError();
   });
