@@ -24,6 +24,7 @@ describe("generate sql for partial update", function () {
   test("fails: no data", function () {
     try {
       const sql = sqlForPartialUpdate({}, USER_JS_TO_SQL);
+      throw new Error("fail test, you shouldn't get here");
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
     }
@@ -42,6 +43,14 @@ describe("generate SQL for filtering", function () {
     expect(sql).toEqual({
       conditions: "num_employees >= $1 AND num_employees <= $2 AND name ILIKE $3",
       values: [1, 10, "%Sons%"]
+    });
+  });
+
+  test("works: no filters", function () {
+    const sql = sqlForFiltering([]);
+    expect(sql).toEqual({
+      conditions: "",
+      values: []
     });
   });
 });
