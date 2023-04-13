@@ -43,10 +43,10 @@ function ensureLoggedIn(req, res, next) {
  */
 
 function ensureAdmin(req, res, next) {
-  if (!res.locals.user || !res.locals.user.isAdmin) {
-    throw new UnauthorizedError();
+  if (res.locals.user && res.locals.user.isAdmin === true) {
+    return next();
   }
-  return next();
+  throw new UnauthorizedError();
 }
 
 /** Middleware to confirm whether user is authorized to make request or admin.
@@ -56,10 +56,10 @@ function ensureAdmin(req, res, next) {
 function ensureCorrectUserOrAdmin(req, res, next) {
   const { username } = req.params;
   if (!res.locals.user) throw new UnauthorizedError();
-  if (!res.locals.user.isAdmin && res.locals.user.username !== username) {
-    throw new UnauthorizedError();
+  if (res.locals.user.isAdmin === true || res.locals.user.username === username) {
+    return next();
   }
-  return next();
+  throw new UnauthorizedError();
 }
 
 
