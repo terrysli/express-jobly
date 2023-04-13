@@ -48,9 +48,9 @@ function sqlForFiltering(dataToFilterBy) {
     if (counter > 1) {
       conditions += ` AND `;
     }
-    conditions += `${datum.filter} ${datum.method} $${counter}`
+    conditions += `${datum.filter} ${datum.method} $${counter}`;
     if (datum.method==="ILIKE") {
-      values.push(`%${datum.value}%`)
+      values.push(`%${datum.value}%`);
     }
     else {
       values.push(datum.value);
