@@ -78,7 +78,7 @@ router.get(
 router.get(
   "/:username",
   ensureLoggedIn,
-  //ensureAdmin,
+  ensureCorrectUserOrAdmin,
   async function (req, res, next) {
     const user = await User.get(req.params.username);
     return res.json({ user });
@@ -95,20 +95,24 @@ router.get(
  * Authorization required: login
  **/
 
-router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
-  const validator = jsonschema.validate(
-    req.body,
-    userUpdateSchema,
-    { required: true }
-  );
-  if (!validator.valid) {
-    const errs = validator.errors.map(e => e.stack);
-    throw new BadRequestError(errs);
-  }
+router.patch(
+  "/:username",
+  ensureLoggedIn,
+  ensureCorrectUserOrAdmin,
+  async function (req, res, next) {
+    const validator = jsonschema.validate(
+      req.body,
+      userUpdateSchema,
+      { required: true }
+    );
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-  const user = await User.update(req.params.username, req.body);
-  return res.json({ user });
-});
+    const user = await User.update(req.params.username, req.body);
+    return res.json({ user });
+  });
 
 
 /** DELETE /[username]  =>  { deleted: username }
@@ -116,7 +120,11 @@ router.patch("/:username", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: login
  **/
 
-router.delete("/:username", ensureLoggedIn, async function (req, res, next) {
+router.delete(
+  "/:username",
+  ensureLoggedIn,
+  ensureCorrectUserOrAdmin,
+  async function (req, res, next) {
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });
