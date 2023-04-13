@@ -8,6 +8,7 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  JOB_IDS
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -112,7 +113,7 @@ describe("find", function () {
   });
 
   test("works: hasEquity = true", async function () {
-    const jobs = await Job.find({hasEquity: true});
+    const jobs = await Job.find({ hasEquity: true });
     expect(jobs).toEqual([
       {
         id: expect.any(Number),
@@ -132,7 +133,7 @@ describe("find", function () {
   });
 
   test("works: hasEquity = false", async function () {
-    const jobs = await Job.find({hasEquity: false});
+    const jobs = await Job.find({ hasEquity: false });
     expect(jobs).toEqual([
       {
         id: expect.any(Number),
@@ -159,7 +160,7 @@ describe("find", function () {
   });
 
   test("works: title", async function () {
-    const jobs = await Job.find({title: "2"});
+    const jobs = await Job.find({ title: "2" });
     expect(jobs).toEqual([
       {
         id: expect.any(Number),
@@ -175,27 +176,41 @@ describe("find", function () {
 
 /************************************** get */
 
-// describe("get", function () {
-//   test("works", async function () {
-//     let company = await Job.get("c1");
-//     expect(company).toEqual({
-//       handle: "c1",
-//       name: "C1",
-//       description: "Desc1",
-//       numEmployees: 1,
-//       logoUrl: "http://c1.img",
-//     });
-//   });
+describe("get", function () {
+  // test("works", async function () {
+  //   const newJob = {
+  //     title: "New",
+  //     salary: 50000,
+  //     equity: 0.005,
+  //     companyHandle: "c1"
+  //   };
+  //   const job = await Job.create(newJob);
+  //   const jobId = job.id;
+  //   let jobToGet = await Job.get(jobId);
+  //   expect(jobToGet).toEqual(job);
+  // });
 
-//   test("not found if no such company", async function () {
-//     try {
-//       await Job.get("nope");
-//       throw new Error("fail test, you shouldn't get here");
-//     } catch (err) {
-//       expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
-// });
+  test("works", async function () {
+
+    let job = await Job.get(JOB_IDS[0]);
+    expect(job).toEqual({
+      id: expect.any(Number),
+      title: "j1",
+      salary: 50000,
+      equity: "0.005",
+      companyHandle: "c1"
+    });
+  });
+
+  test("not found if no such job", async function () {
+    try {
+      await Job.get(-1);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
 
 /************************************** update */
 

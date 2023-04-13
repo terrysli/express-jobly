@@ -109,22 +109,21 @@ class Job {
    * Throws NotFoundError if not found.
    **/
 
-  static async get(handle) {
-    // const companyRes = await db.query(
-    //   `SELECT handle,
-    //             name,
-    //             description,
-    //             num_employees AS "numEmployees",
-    //             logo_url AS "logoUrl"
-    //        FROM companies
-    //        WHERE handle = $1`,
-    //   [handle]);
+  static async get(id) {
+    const jobRes = await db.query(
+      `SELECT id,
+              title,
+              salary,
+              equity,
+              company_handle AS "companyHandle"
+        FROM jobs
+        WHERE id = $1`, [id]);
 
-    // const company = companyRes.rows[0];
+    const job = jobRes.rows[0];
 
-    // if (!company) throw new NotFoundError(`No company: ${handle}`);
+    if (!job) throw new NotFoundError(`No job: ${id}`);
 
-    // return company;
+    return job;
   }
 
   /** Update job data with `data`.
