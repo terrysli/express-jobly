@@ -74,7 +74,7 @@ class Company {
   /** Find all companies that meet filter criteria:
    *  nameLike: filter by company name, selecting companies that include
    *    this string, case insensitive.
-   *  minEmployees: companies with at leas this many employees.
+   *  minEmployees: companies with at least this many employees.
    *  maxEmployees: companies with no more than this many employees.
    *
    * All criteria are optional. If some are provided, only
@@ -83,7 +83,7 @@ class Company {
    * Data can include: {nameLike, minEmployees, maxEmployees}
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    */
-
+  //TODO: either acutally require no criteria, or specify it takes at least one
   static async findSome(filters) {
 
     const dataToFilterBy = [];

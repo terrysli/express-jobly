@@ -47,6 +47,8 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * - minEmployees
  * - maxEmployees
  * - nameLike (will find case-insensitive, partial matches)
+ * 
+ * Filters provided by query string.
  *
  * Authorization required: none
  */
@@ -57,8 +59,10 @@ router.get("/", async function (req, res, next) {
     return res.json({ companies });
   }
 
-  const q = Object.assign({}, req.query);
-
+  //Query string can only give us back strings. We make these numbers so 
+  // we can validate properly with our schema.
+  const q = Object.assign({}, req.query);//TODO: can use spread instead
+  //TODO: move error handling to model level
   if ("minEmployees" in q) {
     q.minEmployees = Number(q.minEmployees)
   }

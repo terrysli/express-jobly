@@ -30,7 +30,7 @@ describe("generate sql for partial update", function () {
   });
 });
 
-
+//TODO: test for no options, 1 option
 describe("generate SQL for filtering", function () {
   test("works: min/max employees and name", function () {
     const dataToFilterBy = [

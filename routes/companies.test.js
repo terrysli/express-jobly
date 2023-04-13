@@ -97,7 +97,7 @@ describe("GET /companies", function () {
 
   });
   test("works: with filters", async function () {
-    const resp = await request(app).get("/companies").query(
+    const resp = await request(app).get("/companies").query(//TODO: "2" instead of 2 in min/maxEmployees
       {
         minEmployees: 2,
         maxEmployees: 2,

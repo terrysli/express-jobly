@@ -4,7 +4,7 @@ const { BadRequestError } = require("../expressError");
  * Take object with data to update and JS to SQL conversion object and generate
  * parameterized SQL statements to set columns equal to given data values
  * {firstName: 'Aliya', age: 32},
- * {firstName: 'first_name', lastName: 'last_name', isAdmin: 'is_admin'} =>
+ *  {firstName: 'first_name', lastName: 'last_name', isAdmin: 'is_admin'} =>
  *  {
     *  setCols: '"first_name"=$1, "age"=$2',
     *  values: ['Aliya', 32]
@@ -42,7 +42,8 @@ function sqlForFiltering(dataToFilterBy) {
   let conditions = "";
   const values = [];
   let counter = 1;
-
+  //TODO: destructure datum
+  //TODO: semicolons
   for (let datum of dataToFilterBy) {
     if (counter > 1) {
       conditions += ` AND `;
