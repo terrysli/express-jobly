@@ -1,6 +1,7 @@
 "use strict";
 
 const db = require("../db");
+const Company = require("./company");
 const { BadRequestError, NotFoundError } = require("../expressError");
 
 class Job {
@@ -12,6 +13,43 @@ class Job {
    * */
 
   static async create({ title, salary, equity, company_handle }) {
+
+    console.log("@@@ Create Ran, input: ", { title, salary, equity, company_handle });
+    try {
+      await Company.get(company_handle);
+    }
+    catch (err) {throw new NotFoundError(`No company: ${handle}`);}
+
+    if (salary < 0) {throw new BadRequestError("Salary must be non-negative")};
+    if (equity < 0 || equity > 1) {
+      throw new BadRequestError("Equity must be between 0 and 1, inclusive");
+    }
+
+    const result = await db.query(
+      `INSERT INTO jobs (
+        title,
+        salary,
+        equity,
+        company_handle)
+         VALUES
+           ($1, $2, $3, $4)
+         RETURNING id,
+         title,
+         salary,
+         equity,
+         company_handle AS "companyHandle"`,
+      [
+        title,
+        salary,
+        equity,
+        company_handle,
+      ],
+    );
+
+    const job = result.rows[0];
+    console.log("@@@ Job:", job);
+
+    return job;
   }
 
 
@@ -31,39 +69,39 @@ class Job {
 
   static async find(filters) {
 
-    if ("minEmployees" in filters
-      && "maxEmployees" in filters
-      && filters.maxEmployees < filters.minEmployees) {
-        throw new BadRequestError("minEmployees cannot be greater than maxEmployees.");
-      }
+    // if ("minEmployees" in filters
+    //   && "maxEmployees" in filters
+    //   && filters.maxEmployees < filters.minEmployees) {
+    //   throw new BadRequestError("minEmployees cannot be greater than maxEmployees.");
+    // }
 
-    const dataToFilterBy = [];
-    if ("minEmployees" in filters) {
-      dataToFilterBy.push(
-        {filter: "num_employees", method: ">=", value: filters.minEmployees});
-      }
-    if ("maxEmployees" in filters) {
-      dataToFilterBy.push(
-        {filter: "num_employees", method: "<=", value: filters.maxEmployees});
-    }
-    if ("nameLike" in filters) {
-      dataToFilterBy.push(
-        {filter: "name", method: "ILIKE", value: filters.nameLike});
-    }
+    // const dataToFilterBy = [];
+    // if ("minEmployees" in filters) {
+    //   dataToFilterBy.push(
+    //     { filter: "num_employees", method: ">=", value: filters.minEmployees });
+    // }
+    // if ("maxEmployees" in filters) {
+    //   dataToFilterBy.push(
+    //     { filter: "num_employees", method: "<=", value: filters.maxEmployees });
+    // }
+    // if ("nameLike" in filters) {
+    //   dataToFilterBy.push(
+    //     { filter: "name", method: "ILIKE", value: filters.nameLike });
+    // }
 
-    let { conditions, values } = sqlForFiltering(dataToFilterBy);
-    conditions = (conditions ? `WHERE ${conditions}` : "");
+    // let { conditions, values } = sqlForFiltering(dataToFilterBy);
+    // conditions = (conditions ? `WHERE ${conditions}` : "");
 
-    const companiesRes = await db.query(
-      `SELECT handle,
-              name,
-              description,
-              num_employees AS "numEmployees",
-              logo_url AS "logoUrl"
-        FROM companies
-        ${conditions}
-        ORDER BY NAME`, values);
-    return companiesRes.rows;
+    // const companiesRes = await db.query(
+    //   `SELECT handle,
+    //           name,
+    //           description,
+    //           num_employees AS "numEmployees",
+    //           logo_url AS "logoUrl"
+    //     FROM companies
+    //     ${conditions}
+    //     ORDER BY NAME`, values);
+    // return companiesRes.rows;
   }
 
 
@@ -75,21 +113,21 @@ class Job {
    **/
 
   static async get(handle) {
-    const companyRes = await db.query(
-        `SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-           FROM companies
-           WHERE handle = $1`,
-        [handle]);
+    // const companyRes = await db.query(
+    //   `SELECT handle,
+    //             name,
+    //             description,
+    //             num_employees AS "numEmployees",
+    //             logo_url AS "logoUrl"
+    //        FROM companies
+    //        WHERE handle = $1`,
+    //   [handle]);
 
-    const company = companyRes.rows[0];
+    // const company = companyRes.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    // if (!company) throw new NotFoundError(`No company: ${handle}`);
 
-    return company;
+    // return company;
   }
 
   /** Update job data with `data`.
@@ -105,22 +143,22 @@ class Job {
    */
 
   static async update(handle, data) {
-    const { setCols, values } = sqlForPartialUpdate(
-        data,
-        JS_TO_SQL);
-    const handleVarIdx = "$" + (values.length + 1);
+    // const { setCols, values } = sqlForPartialUpdate(
+    //   data,
+    //   JS_TO_SQL);
+    // const handleVarIdx = "$" + (values.length + 1);
 
-    const querySql = `
-      UPDATE companies
-      SET ${setCols}
-        WHERE handle = ${handleVarIdx}
-        RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`;
-    const result = await db.query(querySql, [...values, handle]);
-    const company = result.rows[0];
+    // const querySql = `
+    //   UPDATE companies
+    //   SET ${setCols}
+    //     WHERE handle = ${handleVarIdx}
+    //     RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`;
+    // const result = await db.query(querySql, [...values, handle]);
+    // const company = result.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    // if (!company) throw new NotFoundError(`No company: ${handle}`);
 
-    return company;
+    // return company;
   }
 
   /** Delete given job from database; returns undefined.
@@ -129,15 +167,15 @@ class Job {
    **/
 
   static async remove(handle) {
-    const result = await db.query(
-        `DELETE
-           FROM companies
-           WHERE handle = $1
-           RETURNING handle`,
-        [handle]);
-    const company = result.rows[0];
+  //   const result = await db.query(
+  //     `DELETE
+  //          FROM companies
+  //          WHERE handle = $1
+  //          RETURNING handle`,
+  //     [handle]);
+  //   const company = result.rows[0];
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+  //   if (!company) throw new NotFoundError(`No company: ${handle}`);
   }
 }
 

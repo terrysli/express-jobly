@@ -27,6 +27,7 @@ describe("create", function () {
 
   test("works", async function () {
     let job = await Job.create(newJob);
+    console.log("### Test 1 RAN, newJob:",newJob);
     expect(job).toEqual(newJob);
 
     const result = await db.query(
