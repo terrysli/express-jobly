@@ -49,6 +49,13 @@ describe("POST /companies", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
+  test("unauth for user not logged in", async function () {
+    const resp = await request(app)
+      .post("/companies")
+      .send(newCompany);
+    expect(resp.statusCode).toEqual(401);
+  });
+
   test("bad request with missing data", async function () {
     const resp = await request(app)
       .post("/companies")
