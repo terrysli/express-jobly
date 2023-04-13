@@ -231,7 +231,7 @@ describe("GET /users/:username", function () {
       .get(`/users/u1`);
     expect(resp.statusCode).toEqual(401);
   });
-
+  //TODO: make sure anon or unauth gets unauthorized
   test("not found if user not found", async function () {
     const resp = await request(app)
       .get(`/users/nope`)

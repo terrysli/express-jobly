@@ -60,7 +60,7 @@ router.get("/", async function (req, res, next) {
 
   //Query string can only give us back strings. We make these numbers so
   // we can validate properly with our schema.
-  const q = {...req.query};
+  const q = { ...req.query };
 
   if ("minEmployees" in q) {
     q.minEmployees = Number(q.minEmployees);

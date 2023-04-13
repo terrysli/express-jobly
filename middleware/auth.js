@@ -34,8 +34,8 @@ function authenticateJWT(req, res, next) {
  */
 
 function ensureLoggedIn(req, res, next) {
-    if (!res.locals.user) throw new UnauthorizedError();
-    return next();
+  if (!res.locals.user) throw new UnauthorizedError();
+  return next();
 }
 
 /** Middleware to use when logged in user is admin.
@@ -43,7 +43,9 @@ function ensureLoggedIn(req, res, next) {
  */
 
 function ensureAdmin(req, res, next) {
-  if (!res.locals.user || !res.locals.user.isAdmin) throw new UnauthorizedError();
+  if (!res.locals.user || !res.locals.user.isAdmin) {
+    throw new UnauthorizedError();
+  }
   return next();
 }
 
@@ -54,7 +56,7 @@ function ensureAdmin(req, res, next) {
 function ensureCorrectUserOrAdmin(req, res, next) {
   const { username } = req.params;
   if (!res.locals.user) throw new UnauthorizedError();
-  if(!res.locals.user.isAdmin && res.locals.user.username !== username) {
+  if (!res.locals.user.isAdmin && res.locals.user.username !== username) {
     throw new UnauthorizedError();
   }
   return next();

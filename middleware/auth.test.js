@@ -100,7 +100,7 @@ describe("ensureCorrectUserOrAdmin", function () {
     const res = { locals: { user: { username: "test", isAdmin: true } } };
     ensureCorrectUserOrAdmin(req, res, next);
   });
-
+  //TODO:check for error type for unauth .toThrow(unAuthError)
   test("unauth if not logged in", function () {
     const req = {};
     const res = { locals: {} };
