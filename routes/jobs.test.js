@@ -50,7 +50,7 @@ describe("POST /jobs", function () {
             .post("/jobs")
             .send({
                 title: "New",
-        companyHandle: "c1"
+                companyHandle: "c1"
             })
             .set("authorization", `Bearer ${adminToken}`);
         expect(resp.statusCode).toEqual(201);
@@ -63,7 +63,6 @@ describe("POST /jobs", function () {
             }
         });
     });
-
 
 
     test("unauth for user not admin", async function () {
@@ -116,79 +115,85 @@ describe("POST /jobs", function () {
     });
 });
 
-/************************************** GET /companies */
+/************************************** GET /jobs */
 
-// describe("GET /companies", function () {
-//   test("ok for anon", async function () {
-//     const resp = await request(app).get("/companies");
-//     expect(resp.body).toEqual({
-//       companies:
-//         [
-//           {
-//             handle: "c1",
-//             name: "C1",
-//             description: "Desc1",
-//             numEmployees: 1,
-//             logoUrl: "http://c1.img",
-//           },
-//           {
-//             handle: "c2",
-//             name: "C2",
-//             description: "Desc2",
-//             numEmployees: 2,
-//             logoUrl: "http://c2.img",
-//           },
-//           {
-//             handle: "c3",
-//             name: "C3",
-//             description: "Desc3",
-//             numEmployees: 3,
-//             logoUrl: "http://c3.img",
-//           },
-//         ],
-//     });
+describe("GET /jobs", function () {
+    test("ok for anon", async function () {
+        const resp = await request(app).get("/jobs");
+        expect(resp.body).toEqual({
+            jobs:
+                [
+                    {
+                        title: "j1",
+                        salary: 50000,
+                        equity: "0.005",
+                        company_handle: "c1"
+                    },
+                    {
+                        title: "j2",
+                        salary: 100000,
+                        equity: "0.01",
+                        company_handle: "c2"
+                    },
+                    {
+                        title: "j3",
+                        salary: 150000,
+                        equity: null,
+                        company_handle: "c3"
+                    },
+                ]
+        });
 
-//   });
-//   test("works: with filters", async function () {
-//     const resp = await request(app).get("/companies").query(
-//       {
-//         minEmployees: "2",
-//         maxEmployees: "2",
-//         nameLike: "2"
-//       });
+    });
+    test("works: with filters", async function () {
+        const resp = await request(app).get("/companies").query(
+            {
+                title: "2",
+                minSalary: 100000,
+                hasEquity: true
+            });
 
-//     expect(resp.body).toEqual({
-//       companies: [
-//         {
-//           handle: "c2",
-//           name: "C2",
-//           description: "Desc2",
-//           numEmployees: 2,
-//           logoUrl: "http://c2.img",
-//         }]
-//     });
-//   });
+        expect(resp.body).toEqual({
+            jobs: [
+                {
+                    title: "j2",
+                    salary: 100000,
+                    equity: "0.01",
+                    company_handle: "c2"
+                }]
+        });
+    });
 
-//   test("bad request: unexpected fields", async function () {
-//     const resp = await request(app).get("/companies").query(
-//       {
-//         blargh: "haha"
-//       });
+    test("fails: bad filter data", async function () {
+        const resp = await request(app).get("/jobs").query(
+            {
+                minSalary: "100000",
+                hasEquity: 0.5
+            });
 
-//     expect(resp.statusCode).toEqual(400);
-//   });
+        expect(resp.statusCode).toEqual(401);
+    });
 
-//   test("fails: test next() handler", async function () {
-//     // there's no normal failure event which will cause this route to fail ---
-//     // thus making it hard to test that the error-handler works with it. This
-//     // should cause an error, all right :)
-//     await db.query("DROP TABLE companies CASCADE");
-//     const resp = await request(app)
-//       .get("/companies")
-//       .set("authorization", `Bearer ${u1Token}`);
-//     expect(resp.statusCode).toEqual(500);
-//   });
-// });
+    test("bad request: unexpected fields", async function () {
+        const resp = await request(app).get("/jobs").query(
+            {
+                blargh: "haha"
+            });
+
+        expect(resp.statusCode).toEqual(400);
+    });
+
+    test("fails: test next() handler", async function () {
+        // there's no normal failure event which will cause this route to fail ---
+        // thus making it hard to test that the error-handler works with it. This
+        // should cause an error, all right :)
+        await db.query("DROP TABLE jobs CASCADE");
+        const resp = await request(app)
+            .get("/jobs")
+            .set("authorization", `Bearer ${u1Token}`);
+        expect(resp.statusCode).toEqual(500);
+    });
+});
 
 /************************************** GET /companies/:handle */
 

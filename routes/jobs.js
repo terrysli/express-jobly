@@ -10,7 +10,7 @@ const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
 const Job = require("../models/job");
 
 const jobNewSchema = require("../schemas/jobNew.json");
-// const companyGetSchema = require("../schemas/companyGet.json");
+const jobGetSchema = require("../schemas/jobGet.json");
 // const companyUpdateSchema = require("../schemas/companyUpdate.json");
 
 const router = new express.Router();
@@ -19,6 +19,7 @@ const router = new express.Router();
 /** POST / { job } =>  { job }
  *
  * job should be { title, salary, equity, companyHandle }
+ * salary and equity are optional
  *
  * Returns {job: { id, title, salary, equity, companyHandle }}
  *
@@ -44,12 +45,13 @@ router.post(
   });
 
 /** GET /  =>
- *   { companies: [ { handle, name, description, numEmployees, logoUrl }, ...] }
+ *   { jobs: [ { id, title, salary, equity, companyHandle }, ...] }
  *
  * Can filter on provided search filters:
- * - minEmployees
- * - maxEmployees
- * - nameLike (will find case-insensitive, partial matches)
+ * - title (will find case-insensitive, partial matches)
+ * - minSalary
+ * - hasEquity: if true, filter to jobs with non-zero equity, if false or
+ *    missing, ignore equity in filtering
  *
  * Filters provided by query string.
  *
@@ -58,34 +60,30 @@ router.post(
 
 router.get("/", async function (req, res, next) {
 
-//   //Query string can only give us back strings. We make these numbers so
-//   // we can validate properly with our schema.
-//   const q = { ...req.query };
+  //Query string can only give us back strings. We make these numbers/bool so
+  // we can validate properly with our schema.
+  const q = { ...req.query };
 
-//   if ("minEmployees" in q) {
-//     q.minEmployees = Number(q.minEmployees);
-//   }
+  if ("minSalary" in q) {
+    q.minSalary = Number(q.minSalary);
+  }
 
-//   if ("maxEmployees" in q) {
-//     q.maxEmployees = Number(q.maxEmployees);
-//   }
+  if ("hasEquity" in q) {
+    q.hasEquity = Boolean(q.hasEquity);
+  }
 
-//   const validator = jsonschema.validate(
-//     q,
-//     companyGetSchema,
-//     { required: true }
-//   );
-//   if (!validator.valid) {
-//     const errs = validator.errors.map(e => e.stack);
-//     throw new BadRequestError(errs);
-//   }
-//   // if (q.minEmployees > q.maxEmployees) {
-//   //   throw new BadRequestError(
-//   //     "minEmployees cannot be greater than maxEmployees.");
-//   // }
+  const validator = jsonschema.validate(
+    q,
+    jobGetSchema,
+    { required: true }
+  );
+  if (!validator.valid) {
+    const errs = validator.errors.map(e => e.stack);
+    throw new BadRequestError(errs);
+  }
 
-//   const companies = await Company.find(q);
-//   return res.json({ companies });
+  const jobs = await Job.find(q);
+  return res.json({ jobs });
 
 });
 
