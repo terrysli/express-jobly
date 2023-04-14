@@ -2,7 +2,7 @@ const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { sqlForPartialUpdate, sqlForFiltering } = require("./sql");
 
-const USER_SQL = {
+const USER_JS_TO_SQL = {
   firstName: 'first_name',
   lastName: 'last_name',
   isAdmin: 'is_admin'
