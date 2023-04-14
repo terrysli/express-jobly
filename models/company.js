@@ -113,9 +113,9 @@ class Company {
    *
    * Throws NotFoundError if not found.
    **/
-  //TODO: pick a better name for companyRes, like companyAndJobsRes
+
   static async get(handle) {
-    const companyRes = await db.query(
+    const companyAndJobRes = await db.query(
       `SELECT c.handle,
                 c.name,
                 c.description,
@@ -130,21 +130,20 @@ class Company {
            WHERE handle = $1
            ORDER BY salary DESC`,
       [handle]);
-    if (!companyRes.rows[0]) throw new NotFoundError(`No company: ${handle}`);
+    if (!companyAndJobRes.rows[0]) throw new NotFoundError(`No company: ${handle}`);
 
     const jobs = [];
-      //TODO: // for comment
-    for (const { id, title, salary, equity} of companyRes.rows) {
-      /**since we are left joining, we always get back at least one row, but
-       * if that company has no jobs, the job-related fields are null. 
-       * In this case, don't add a job to this array of jobs.
-      */
+
+    for (const { id, title, salary, equity} of companyAndJobRes.rows) {
+      //since we are left joining, we always get back at least one row, but
+      // if that company has no jobs, the job-related fields are null. 
+      // In this case, don't add a job to this array of jobs.
       if (id !== null) {
         jobs.push({ id, title, salary, equity });
       }
     }
 
-    const { name, description, numEmployees, logoUrl } = companyRes.rows[0];
+    const { name, description, numEmployees, logoUrl } = companyAndJobRes.rows[0];
     const company = { handle, name, description, numEmployees, logoUrl, jobs };
 
     return company;

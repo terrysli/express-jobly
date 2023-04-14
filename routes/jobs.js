@@ -110,7 +110,7 @@ router.get("/:id", async function (req, res, next) {
  *
  * Authorization required: login and admin
  */
-//TODO: id param is a string, better to convert to number
+
 router.patch(
   "/:id",
   ensureAdmin,
@@ -125,7 +125,7 @@ router.patch(
       throw new BadRequestError(errs);
     }
 
-    const job = await Job.update(req.params.id, req.body);
+    const job = await Job.update(Number(req.params.id), req.body);
     return res.json({ job });
   });
 

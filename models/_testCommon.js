@@ -2,8 +2,8 @@ const bcrypt = require("bcrypt");
 
 const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
-//TODO: don't use all caps, it can change
-const JOB_IDS = [];
+
+const jobIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -40,7 +40,7 @@ async function commonBeforeAll() {
     RETURNING id`
   );
   for (const row of ids.rows) {
-    JOB_IDS.push(row.id);
+    jobIds.push(row.id);
   }
 
 }
@@ -63,5 +63,5 @@ module.exports = {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  JOB_IDS
+  jobIds
 };

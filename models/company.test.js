@@ -9,7 +9,7 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  JOB_IDS
+  jobIds
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -152,7 +152,7 @@ describe("get", function () {
       numEmployees: 1,
       logoUrl: "http://c1.img",
       jobs: [ {
-        id: JOB_IDS[0],
+        id: jobIds[0],
         title: "j1",
         salary: 50000,
         equity: "0.005",
@@ -161,7 +161,7 @@ describe("get", function () {
   });
 
   test("works, company with no jobs", async function () {
-    await Job.remove(JOB_IDS[0]);
+    await Job.remove(jobIds[0]);
     let company = await Company.get("c1");
     expect(company).toEqual({
       handle: "c1",

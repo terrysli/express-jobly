@@ -31,7 +31,7 @@ describe("generate sql for partial update", function () {
   });
 });
 
-//TODO: test for 1 option
+
 describe("generate SQL for filtering", function () {
   test("works: min/max employees and name", function () {
     const dataToFilterBy = [
@@ -51,6 +51,15 @@ describe("generate SQL for filtering", function () {
     expect(sql).toEqual({
       conditions: "",
       values: []
+    });
+  });
+
+  test("works: 1 filter", function () {
+    const sql = sqlForFiltering(
+      [{ filter: "num_employees", method: ">=", value: 1 }]);
+    expect(sql).toEqual({
+      conditions: "num_employees >= $1",
+      values: [1]
     });
   });
 });

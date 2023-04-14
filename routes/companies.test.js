@@ -12,7 +12,7 @@ const {
   commonAfterAll,
   u1Token,
   adminToken,
-  JOB_IDS,
+  jobIds,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -167,7 +167,7 @@ describe("GET /companies/:handle", function () {
         numEmployees: 1,
         logoUrl: "http://c1.img",
         jobs: [ {
-          id: JOB_IDS[0],
+          id: jobIds[0],
           title: "j1",
           salary: 50000,
           equity: "0.005",
@@ -178,7 +178,7 @@ describe("GET /companies/:handle", function () {
 
   test("works for anon: company w/o jobs", async function () {
     await request(app)
-    .delete(`/jobs/${JOB_IDS[0]}`)
+    .delete(`/jobs/${jobIds[0]}`)
       .set("authorization", `Bearer ${adminToken}`);
 
     const resp = await request(app).get(`/companies/c1`);
