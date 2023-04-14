@@ -2,7 +2,7 @@ const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const { sqlForPartialUpdate, sqlForFiltering } = require("./sql");
 
-const USER_JS_TO_SQL = {
+const USER_SQL = {
   firstName: 'first_name',
   lastName: 'last_name',
   isAdmin: 'is_admin'
@@ -31,7 +31,7 @@ describe("generate sql for partial update", function () {
   });
 });
 
-//TODO: test for no options, 1 option
+//TODO: test for 1 option
 describe("generate SQL for filtering", function () {
   test("works: min/max employees and name", function () {
     const dataToFilterBy = [
