@@ -3,11 +3,13 @@
 const db = require("../db.js");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const Company = require("./company.js");
+const Job = require("./job.js")
 const {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  JOB_IDS
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -149,6 +151,25 @@ describe("get", function () {
       description: "Desc1",
       numEmployees: 1,
       logoUrl: "http://c1.img",
+      jobs: [ {
+        id: JOB_IDS[0],
+        title: "j1",
+        salary: 50000,
+        equity: "0.005",
+      }]
+    });
+  });
+
+  test("works, company with no jobs", async function () {
+    await Job.remove(JOB_IDS[0]);
+    let company = await Company.get("c1");
+    expect(company).toEqual({
+      handle: "c1",
+      name: "C1",
+      description: "Desc1",
+      numEmployees: 1,
+      logoUrl: "http://c1.img",
+      jobs: []
     });
   });
 

@@ -12,6 +12,7 @@ const {
   commonAfterAll,
   u1Token,
   adminToken,
+  JOB_IDS,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -165,19 +166,30 @@ describe("GET /companies/:handle", function () {
         description: "Desc1",
         numEmployees: 1,
         logoUrl: "http://c1.img",
+        jobs: [ {
+          id: JOB_IDS[0],
+          title: "j1",
+          salary: 50000,
+          equity: "0.005",
+        }]
       },
     });
   });
 
   test("works for anon: company w/o jobs", async function () {
-    const resp = await request(app).get(`/companies/c2`);
+    await request(app)
+    .delete(`/jobs/${JOB_IDS[0]}`)
+      .set("authorization", `Bearer ${adminToken}`);
+
+    const resp = await request(app).get(`/companies/c1`);
     expect(resp.body).toEqual({
       company: {
-        handle: "c2",
-        name: "C2",
-        description: "Desc2",
-        numEmployees: 2,
-        logoUrl: "http://c2.img",
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+        jobs: []
       },
     });
   });
