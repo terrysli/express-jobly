@@ -11,7 +11,7 @@ const Job = require("../models/job");
 
 const jobNewSchema = require("../schemas/jobNew.json");
 const jobGetSchema = require("../schemas/jobGet.json");
-// const companyUpdateSchema = require("../schemas/companyUpdate.json");
+const jobUpdateSchema = require("../schemas/jobUpdate.json");
 
 const router = new express.Router();
 
@@ -117,18 +117,18 @@ router.patch(
   "/:id",
   ensureAdmin,
   async function (req, res, next) {
-    // const validator = jsonschema.validate(
-    //   req.body,
-    //   companyUpdateSchema,
-    //   { required: true }
-    // );
-    // if (!validator.valid) {
-    //   const errs = validator.errors.map(e => e.stack);
-    //   throw new BadRequestError(errs);
-    // }
+    const validator = jsonschema.validate(
+      req.body,
+      jobUpdateSchema,
+      { required: true }
+    );
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
 
-    // const company = await Company.update(req.params.handle, req.body);
-    // return res.json({ company });
+    const job = await Job.update(req.params.id, req.body);
+    return res.json({ job });
   });
 
 /** DELETE /[handle]  =>  { deleted: handle }
