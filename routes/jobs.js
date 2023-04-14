@@ -102,19 +102,19 @@ router.get("/:id", async function (req, res, next) {
   return res.json({ job });
 });
 
-/** PATCH /[handle] { fld1, fld2, ... } => { company }
+/** PATCH /[id] { fld1, fld2, ... } => { job }
  *
- * Patches company data.
+ * Patches job data.
  *
- * fields can be: { name, description, numEmployees, logo_url }
+ * fields can be: { title, salary, equity }
  *
- * Returns { handle, name, description, numEmployees, logo_url }
+ * Returns { id, title, salary, equity, companyHandle }
  *
  * Authorization required: login and admin
  */
 
 router.patch(
-  "/:handle",
+  "/:id",
   ensureAdmin,
   async function (req, res, next) {
     // const validator = jsonschema.validate(
