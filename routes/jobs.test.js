@@ -124,42 +124,46 @@ describe("GET /jobs", function () {
             jobs:
                 [
                     {
+                        id: expect.any(Number),
                         title: "j1",
                         salary: 50000,
                         equity: "0.005",
-                        company_handle: "c1"
+                        companyHandle: "c1"
                     },
                     {
+                        id: expect.any(Number),
                         title: "j2",
                         salary: 100000,
                         equity: "0.01",
-                        company_handle: "c2"
+                        companyHandle: "c2"
                     },
                     {
+                        id: expect.any(Number),
                         title: "j3",
                         salary: 150000,
                         equity: null,
-                        company_handle: "c3"
+                        companyHandle: "c3"
                     },
                 ]
         });
 
     });
     test("works: with filters", async function () {
-        const resp = await request(app).get("/companies").query(
+        const resp = await request(app).get("/jobs").query(
             {
                 title: "2",
-                minSalary: 100000,
-                hasEquity: true
+                minSalary: "100000",
+                hasEquity: "true"
             });
 
         expect(resp.body).toEqual({
             jobs: [
                 {
+                    id: expect.any(Number),
                     title: "j2",
                     salary: 100000,
                     equity: "0.01",
-                    company_handle: "c2"
+                    companyHandle: "c2"
                 }]
         });
     });
@@ -167,11 +171,11 @@ describe("GET /jobs", function () {
     test("fails: bad filter data", async function () {
         const resp = await request(app).get("/jobs").query(
             {
-                minSalary: "100000",
-                hasEquity: 0.5
+                minSalary: "hundred",
+                hasEquity: "0.5"
             });
 
-        expect(resp.statusCode).toEqual(401);
+        expect(resp.statusCode).toEqual(400);
     });
 
     test("bad request: unexpected fields", async function () {

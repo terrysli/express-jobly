@@ -72,6 +72,8 @@ router.get("/", async function (req, res, next) {
     q.hasEquity = Boolean(q.hasEquity);
   }
 
+  console.log("@@@ q before validators:", q, "typeOf minSalary", typeof q.minSalary, "typeof hasEquity", typeof q.hasEquity);
+
   const validator = jsonschema.validate(
     q,
     jobGetSchema,
@@ -81,7 +83,7 @@ router.get("/", async function (req, res, next) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
-
+  console.log("@@@ get filters:", q);
   const jobs = await Job.find(q);
   return res.json({ jobs });
 
