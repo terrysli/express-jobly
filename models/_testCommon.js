@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 
 const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
-
+//TODO: don't use all caps, it can change
 const JOB_IDS = [];
 
 async function commonBeforeAll() {

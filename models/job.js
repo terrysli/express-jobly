@@ -8,7 +8,7 @@ const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
 const JS_TO_SQL = {
   companyHandle: "company_handle",
 };
-
+//TODO: ensure equity is a string for proper precision
 class Job {
   /** Create a jobs (from data), update db, return new job data.
    *

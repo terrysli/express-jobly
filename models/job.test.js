@@ -285,7 +285,7 @@ describe("update", function () {
       company_handle: 'c1'
     }]);
   });
-
+  //TODO: more common to use 0 instead of -1
   test("not found if no such company", async function () {
     try {
       await Job.update(-1, updateData);

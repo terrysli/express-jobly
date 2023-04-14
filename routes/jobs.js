@@ -25,7 +25,7 @@ const router = new express.Router();
  *
  * Authorization required: login and admin.
  */
-
+//TODO: be nervouse about passing req.body into Job.create
 router.post(
   "/",
   ensureAdmin,
@@ -110,7 +110,7 @@ router.get("/:id", async function (req, res, next) {
  *
  * Authorization required: login and admin
  */
-
+//TODO: id param is a string, better to convert to number
 router.patch(
   "/:id",
   ensureAdmin,

@@ -19,9 +19,9 @@ beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
-
 /************************************** POST /companies */
 
+//TODO: make equities strings in tests, consider updating schemas
 describe("POST /jobs", function () {
     const newJob = {
         title: "New",
@@ -116,7 +116,7 @@ describe("POST /jobs", function () {
 });
 
 /************************************** GET /jobs */
-
+//TODO: we know what the ids are here, use them
 describe("GET /jobs", function () {
     test("ok for anon", async function () {
         const resp = await request(app).get("/jobs");
@@ -164,6 +164,26 @@ describe("GET /jobs", function () {
                     salary: 100000,
                     equity: "0.01",
                     companyHandle: "c2"
+                }]
+        });
+    });
+
+    test("works: with filters, hasEquity=false", async function () {
+        const resp = await request(app).get("/jobs").query(
+            {
+                title: "3",
+                minSalary: "100000",
+                hasEquity: "false"
+            });
+
+        expect(resp.body).toEqual({
+            jobs: [
+                {
+                    id: expect.any(Number),
+                    title: "j3",
+                    salary: 150000,
+                    equity: null,
+                    companyHandle: "c3"
                 }]
         });
     });
