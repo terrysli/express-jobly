@@ -69,8 +69,8 @@ router.get("/", async function (req, res, next) {
   }
 
   if ("hasEquity" in q) {
-    if (q.hasEquity === "true") { q.hasEquity = true;}
-    else if (q.hasEquity === "false") {q.hasEquity = false;}
+    if (q.hasEquity === "true") { q.hasEquity = true; }
+    else if (q.hasEquity === "false") { q.hasEquity = false; }
   }
 
   console.log("@@@ q before validators:", q, "typeOf minSalary", typeof q.minSalary, "typeof hasEquity", typeof q.hasEquity);
@@ -90,17 +90,16 @@ router.get("/", async function (req, res, next) {
 
 });
 
-/** GET /[handle]  =>  { company }
+/** GET /[id]  =>  { job }
  *
- *  Company is { handle, name, description, numEmployees, logoUrl, jobs }
- *   where jobs is [{ id, title, salary, equity }, ...]
+ *  Job is { id, title, salary, equity }
  *
  * Authorization required: none
  */
 
-router.get("/:handle", async function (req, res, next) {
-//   const company = await Company.get(req.params.handle);
-//   return res.json({ company });
+router.get("/:id", async function (req, res, next) {
+  const job = await Job.get(req.params.id);
+  return res.json({ job });
 });
 
 /** PATCH /[handle] { fld1, fld2, ... } => { company }
