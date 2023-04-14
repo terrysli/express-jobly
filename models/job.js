@@ -12,7 +12,8 @@ const JS_TO_SQL = {
 class Job {
   /** Create a jobs (from data), update db, return new job data.
    *
-   * data should be { title, salary, equity, companyHandle }
+   * data must include { title, companyHandle }
+   * data can optionally include {salary, equity}
    *
    * Returns { id, title, salary, equity, companyHandle }
    * */

@@ -22,7 +22,7 @@ describe("create", function () {
   const newJob = {
     title: "New",
     salary: 50000,
-    equity: 0.005,
+    equity: "0.005",
     companyHandle: "c1"
   };
 
@@ -45,6 +45,33 @@ describe("create", function () {
         title: "New",
         salary: 50000,
         equity: "0.005",
+        company_handle: "c1"
+      },
+    ]);
+  });
+
+  test("works, no salary or equity", async function () {
+    let job = await Job.create({
+      title: "New",
+      companyHandle: "c1"
+    });
+    expect(job).toEqual({
+      id: expect.any(Number),
+      title: "New",
+      salary: null, 
+      equity: null,
+      companyHandle: "c1"
+    });
+
+    const result = await db.query(
+      `SELECT title, salary, equity, company_handle
+           FROM jobs
+           WHERE title = 'New'`);
+    expect(result.rows).toEqual([
+      {
+        title: "New",
+        salary: null,
+        equity: null,
         company_handle: "c1"
       },
     ]);
