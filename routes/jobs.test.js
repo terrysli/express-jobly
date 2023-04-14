@@ -103,7 +103,7 @@ describe("POST /jobs", function () {
         expect(resp.statusCode).toEqual(400);
     });
 
-    test("not found, job not found", async function () {
+    test("not found, company not found", async function () {
         const resp = await request(app)
             .post("/jobs")
             .send({

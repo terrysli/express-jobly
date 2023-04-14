@@ -204,21 +204,8 @@ describe("find", function () {
 /************************************** get */
 
 describe("get", function () {
-  // test("works", async function () {
-  //   const newJob = {
-  //     title: "New",
-  //     salary: 50000,
-  //     equity: 0.005,
-  //     companyHandle: "c1"
-  //   };
-  //   const job = await Job.create(newJob);
-  //   const jobId = job.id;
-  //   let jobToGet = await Job.get(jobId);
-  //   expect(jobToGet).toEqual(job);
-  // });
 
   test("works", async function () {
-
     let job = await Job.get(JOB_IDS[0]);
     expect(job).toEqual({
       id: expect.any(Number),
