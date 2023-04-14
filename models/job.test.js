@@ -293,20 +293,20 @@ describe("update", function () {
 
 /************************************** remove */
 
-// describe("remove", function () {
-//   test("works", async function () {
-//     await Job.remove("c1");
-//     const res = await db.query(
-//       "SELECT handle FROM companies WHERE handle='c1'");
-//     expect(res.rows.length).toEqual(0);
-//   });
+describe("remove", function () {
+  test("works", async function () {
+    await Job.remove(JOB_IDS[0]);
+    const res = await db.query(
+      `SELECT id FROM jobs WHERE id=${JOB_IDS[0]}`);
+    expect(res.rows.length).toEqual(0);
+  });
 
-//   test("not found if no such company", async function () {
-//     try {
-//       await Job.remove("nope");
-//       throw new Error("fail test, you shouldn't get here");
-//     } catch (err) {
-//       expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
-// });
+  test("not found if no such job", async function () {
+    try {
+      await Job.remove(-1);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});

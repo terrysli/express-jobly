@@ -7,7 +7,7 @@ const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
 const JS_TO_SQL = {
   numEmployees: "num_employees",
   logoUrl: "logo_url"
-}
+};
 
 /** Related functions for companies. */
 
