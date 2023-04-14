@@ -69,7 +69,8 @@ router.get("/", async function (req, res, next) {
   }
 
   if ("hasEquity" in q) {
-    q.hasEquity = Boolean(q.hasEquity);
+    if (q.hasEquity === "true") { q.hasEquity = true;}
+    else if (q.hasEquity === "false") {q.hasEquity = false;}
   }
 
   console.log("@@@ q before validators:", q, "typeOf minSalary", typeof q.minSalary, "typeof hasEquity", typeof q.hasEquity);
