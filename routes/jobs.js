@@ -131,17 +131,21 @@ router.patch(
     return res.json({ job });
   });
 
-/** DELETE /[handle]  =>  { deleted: handle }
+/** DELETE /[id]  =>  { deleted: id }
  *
  * Authorization: login and admin
  */
 
 router.delete(
-  "/:handle",
+  "/:id",
   ensureAdmin,
   async function (req, res, next) {
-    // await Company.remove(req.params.handle);
-    // return res.json({ deleted: req.params.handle });
+    const id = Number(req.params.id)
+    if (isNaN(id)) {
+        throw new BadRequestError("id must be a number");
+    }
+    await Job.remove(id);
+    return res.json({ deleted: id });
   });
 
 
