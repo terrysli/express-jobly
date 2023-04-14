@@ -217,8 +217,8 @@ describe("get", function () {
 describe("update", function () {
   const updateData = {
     title: "New",
-    salary: 500000,
-    equity: .020,
+    salary: 60000,
+    equity: 0.021,
   };
 
   test("works", async function () {
@@ -227,7 +227,7 @@ describe("update", function () {
       id: JOB_IDS[0],
       title: "New",
       salary: 60000,
-      equity: ".020",
+      equity: "0.021",
       companyHandle: 'c1'
     });
 
@@ -239,7 +239,7 @@ describe("update", function () {
       id: JOB_IDS[0],
       title: "New",
       salary: 60000,
-      equity: ".020",
+      equity: "0.021",
       company_handle: 'c1'
     }]);
   });
@@ -254,7 +254,7 @@ describe("update", function () {
     expect(job).toEqual({
       id: JOB_IDS[0],
       title: "New",
-      salary: 50000,
+      salary: null,
       equity: "0.005",
       companyHandle: 'c1'
     });
@@ -266,7 +266,7 @@ describe("update", function () {
     expect(result.rows).toEqual([{
       id: JOB_IDS[0],
       title: "New",
-      salary: 50000,
+      salary: null,
       equity: "0.005",
       company_handle: 'c1'
     }]);

@@ -3,7 +3,11 @@
 const db = require("../db");
 const Company = require("./company");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForFiltering } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFiltering } = require("../helpers/sql");
+
+const JS_TO_SQL = {
+  companyHandle: "company_handle",
+};
 
 class Job {
   /** Create a jobs (from data), update db, return new job data.
@@ -22,7 +26,7 @@ class Job {
       throw new NotFoundError(`No company: ${companyHandle}`);
     }
 
-    if (salary < 0) {throw new BadRequestError("Salary must be non-negative")};
+    if (salary < 0) { throw new BadRequestError("Salary must be non-negative"); };
     if (equity < 0 || equity > 1) {
       throw new BadRequestError("Equity must be between 0 and 1, inclusive");
     }
@@ -138,23 +142,23 @@ class Job {
    * Throws NotFoundError if not found.
    */
 
-  static async update(handle, data) {
-    // const { setCols, values } = sqlForPartialUpdate(
-    //   data,
-    //   JS_TO_SQL);
-    // const handleVarIdx = "$" + (values.length + 1);
+  static async update(id, data) {
+    const { setCols, values } = sqlForPartialUpdate(
+      data,
+      JS_TO_SQL);
+    const idVarIdx = "$" + (values.length + 1);
 
-    // const querySql = `
-    //   UPDATE companies
-    //   SET ${setCols}
-    //     WHERE handle = ${handleVarIdx}
-    //     RETURNING handle, name, description, num_employees AS "numEmployees", logo_url AS "logoUrl"`;
-    // const result = await db.query(querySql, [...values, handle]);
-    // const company = result.rows[0];
+    const querySql = `
+      UPDATE jobs
+      SET ${setCols}
+        WHERE id = ${idVarIdx}
+        RETURNING id, title, salary, equity, company_handle AS "companyHandle"`;
+    const result = await db.query(querySql, [...values, id]);
+    const job = result.rows[0];
 
-    // if (!company) throw new NotFoundError(`No company: ${handle}`);
+    if (!job) throw new NotFoundError(`No job: ${id}`);
 
-    // return company;
+    return job;
   }
 
   /** Delete given job from database; returns undefined.
@@ -163,15 +167,15 @@ class Job {
    **/
 
   static async remove(handle) {
-  //   const result = await db.query(
-  //     `DELETE
-  //          FROM companies
-  //          WHERE handle = $1
-  //          RETURNING handle`,
-  //     [handle]);
-  //   const company = result.rows[0];
+    //   const result = await db.query(
+    //     `DELETE
+    //          FROM companies
+    //          WHERE handle = $1
+    //          RETURNING handle`,
+    //     [handle]);
+    //   const company = result.rows[0];
 
-  //   if (!company) throw new NotFoundError(`No company: ${handle}`);
+    //   if (!company) throw new NotFoundError(`No company: ${handle}`);
   }
 }
 
